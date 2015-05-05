@@ -26,6 +26,23 @@ public class NewsController {
 		categories.add(new NewsCategory("53","招生就业"));
 		return categories;
 	}
+	@RequestMapping(value="/findInitNews.do")
+	public List<News> findInitNews(){
+		List<News> newsList = new ArrayList<News>();
+		try{
+			Document doc = Jsoup.connect("http://news.cqu.edu.cn/news/").get();
+			Elements liphoto = doc.select("div.topnews li");
+			for(Element row:liphoto)
+			{
+				Element link=row.select("a").first();
+				News news=new News(link.attr("href"),link.attr("title"),"","");
+				newsList.add(news);
+			}
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		return newsList;
+	}
 	@RequestMapping(value="/findNewsByCategory.do")
 	public List<News> findNewsByCategory(String categoryId)
 	{
